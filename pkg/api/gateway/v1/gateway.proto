@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package api.gateway.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/fleezesd/xnightwatch/api/gateway/v1;v1";
+option java_multiple_files = true;
+option java_package = "api.gateway.v1";
+
+service Gateway {
+	rpc GetVersion(google.protobuf.Empty) returns (GetVersionResponse) {
+		option (google.api.http) = {
+			get: "/version"
+		};
+	}
+}
+
+message GetVersionResponse {
+	string GitVersion = 1;
+	string GitCommit = 2;
+	string GitTreeState = 3;
+	string BuildDate = 4;
+	string GoVersion = 5; 
+	string Compiler = 6;
+	string Platform = 7;
+  }

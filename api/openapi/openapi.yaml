@@ -1,0 +1,41 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.1.0
+info:
+    title: Gateway API
+    version: 0.0.1
+paths:
+    /version:
+        get:
+            tags:
+                - Gateway
+            operationId: Gateway_GetVersion
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.gateway.v1.GetVersionResponse'
+components:
+    schemas:
+        api.gateway.v1.GetVersionResponse:
+            type: object
+            properties:
+                GitVersion:
+                    type: string
+                GitCommit:
+                    type: string
+                GitTreeState:
+                    type: string
+                BuildDate:
+                    type: string
+                GoVersion:
+                    type: string
+                Compiler:
+                    type: string
+                Platform:
+                    type: string
+tags:
+    - name: Gateway
