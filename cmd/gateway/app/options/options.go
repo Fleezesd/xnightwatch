@@ -3,6 +3,8 @@ package options
 import (
 	"github.com/fleezesd/xnightwatch/internal/gateway"
 	"github.com/fleezesd/xnightwatch/pkg/app"
+	"github.com/fleezesd/xnightwatch/pkg/log"
+	genericoptions "github.com/fleezesd/xnightwatch/pkg/options"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
 	cliflag "k8s.io/component-base/cli/flag"
 )
@@ -14,6 +16,16 @@ const (
 var _ app.CliOptions = (*Options)(nil)
 
 type Options struct {
+	GRPCOptions   *genericoptions.GRPCOptions    `json:"grpc" mapstructure:"grpc"`
+	HTTPOptions   *genericoptions.HTTPOptions    `json:"http" mapstructure:"http"`
+	TLSOptions    *genericoptions.TLSOptions     `json:"tls" mapstructure:"tls"`
+	MySQLOptions  *genericoptions.MySQLOptions   `json:"mysql" mapstructure:"mysql"`
+	RedisOptions  *genericoptions.RedisOptions   `json:"redis" mapstructure:"redis"`
+	JaegerOptions *genericoptions.JaegerOptions  `json:"jaeger" mapstructure:"jaeger"`
+	Metrics       *genericoptions.MetricsOptions `json:"metrics" mapstructure:"metrics"`
+	EnableTLS     bool                           `json:"enable-tls" mapstructure:"enable-tls"`
+	Kubeconfig    string                         `json:"kubeconfig" mapstructure:"kubeconfig"`
+	Log           *log.Options                   `json:"log" mapstructure:"log"`
 }
 
 func NewOptions() *Options {
