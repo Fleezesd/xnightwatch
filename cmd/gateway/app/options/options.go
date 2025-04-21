@@ -2,12 +2,14 @@ package options
 
 import (
 	"github.com/fleezesd/xnightwatch/internal/gateway"
+	kubeutil "github.com/fleezesd/xnightwatch/internal/pkg/util/kube"
 	"github.com/fleezesd/xnightwatch/pkg/app"
 	"github.com/fleezesd/xnightwatch/pkg/client"
 	"github.com/fleezesd/xnightwatch/pkg/feature"
 	"github.com/fleezesd/xnightwatch/pkg/log"
 	genericoptions "github.com/fleezesd/xnightwatch/pkg/options"
 	utilerrors "k8s.io/apimachinery/pkg/util/errors"
+	"k8s.io/client-go/tools/clientcmd"
 	cliflag "k8s.io/component-base/cli/flag"
 )
 
@@ -100,13 +102,28 @@ func (o *Options) Validate() error {
 
 // ApplyTo fills up gateway config with options
 func (o *Options) ApplyTo(c *gateway.Config) error {
+	c.GRPCOptions = o.GRPCOptions
+	c.HTTPOptions = o.HTTPOptions
+	c.TLSOptions = o.TLSOptions
+	c.MySQLOptions = o.MySQLOptions
+	c.RedisOptions = o.RedisOptions
+	c.EtcdOptions = o.EtcdOptions
+	c.JaegerOptions = o.JaegerOptions
+	c.ConsulOptions = o.ConsulOptions
 	return nil
 }
 
 // Config returns gateway config object
 func (o *Options) Config() (*gateway.Config, error) {
+	kubeconfig, err := clientcmd.BuildConfigFromFlags("", o.Kubeconfig)
+	if err != nil {
+		return nil, err
+	}
+	kubeconfig = kubeutil.SetDefaultClientOptions(kubeutil.AddUserAgent(kubeconfig, UserAgent))
 
-	c := &gateway.Config{}
+	c := &gateway.Config{
+		KubeConfig: kubeconfig,
+	}
 
 	if err := o.ApplyTo(c); err != nil {
 		return nil, err

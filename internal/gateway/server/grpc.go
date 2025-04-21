@@ -24,6 +24,10 @@ func NewGRPCServer(c *Config, gw *service.GatewayService, logger log.Logger) *gr
 	if c.GRPC.Timeout != 0 {
 		opts = append(opts, grpc.Timeout(c.GRPC.Timeout))
 	}
+	if c.TLS.UseTLS {
+		opts = append(opts, grpc.TLSConfig(c.TLS.MustTLSConfig()))
+	}
+
 	srv := grpc.NewServer(opts...)
 	v1.RegisterGatewayServer(srv, gw)
 	return srv

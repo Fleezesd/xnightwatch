@@ -7,4 +7,5 @@ import (
 type Config struct {
 	HTTP genericoptions.HTTPOptions
 	GRPC genericoptions.GRPCOptions
+	TLS  genericoptions.TLSOptions
 }

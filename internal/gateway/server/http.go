@@ -27,6 +27,10 @@ func NewHTTPServer(c *Config, gw *service.GatewayService, logger log.Logger) *ht
 	if c.HTTP.Timeout != 0 {
 		opts = append(opts, http.Timeout(c.HTTP.Timeout))
 	}
+	if c.TLS.UseTLS {
+		opts = append(opts, http.TLSConfig(c.TLS.MustTLSConfig()))
+	}
+
 	srv := http.NewServer(opts...)
 	h := openapiv2.NewHandler()
 	srv.HandlePrefix("/openapi", h)

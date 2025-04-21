@@ -1,6 +1,20 @@
 package biz
 
-import "github.com/google/wire"
+import (
+	"github.com/fleezesd/xnightwatch/internal/gateway/store"
+	"github.com/google/wire"
+)
 
 // ProviderSet is biz providers.
-var ProviderSet = wire.NewSet()
+var ProviderSet = wire.NewSet(NewBiz, wire.Bind(new(IBiz), new(*biz)))
+
+type IBiz interface {
+}
+
+type biz struct {
+	ds store.IStore
+}
+
+func NewBiz(ds store.IStore) *biz {
+	return &biz{ds: ds}
+}
