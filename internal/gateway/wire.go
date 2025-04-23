@@ -13,6 +13,7 @@ import (
 	"github.com/fleezesd/xnightwatch/internal/gateway/service"
 	"github.com/fleezesd/xnightwatch/internal/gateway/store"
 	"github.com/fleezesd/xnightwatch/internal/pkg/bootstrap"
+	"github.com/fleezesd/xnightwatch/internal/pkg/idempotent"
 	"github.com/fleezesd/xnightwatch/pkg/db"
 	genericoptions "github.com/fleezesd/xnightwatch/pkg/options"
 	"github.com/go-kratos/kratos/v2"
@@ -25,7 +26,6 @@ func wireApp(
 	*server.Config,
 	*db.MySQLOptions,
 	*db.RedisOptions,
-	*genericoptions.RedisOptions,
 	*genericoptions.EtcdOptions,
 ) (*kratos.App, func(), error) {
 	wire.Build(

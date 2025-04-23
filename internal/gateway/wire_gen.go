@@ -19,7 +19,7 @@ import (
 
 // Injectors from wire.go:
 
-func wireApp(arg <-chan struct{}, appInfo bootstrap.AppInfo, config *server.Config, mySQLOptions *db.MySQLOptions, redisOptions *db.RedisOptions, optionsRedisOptions *options.RedisOptions, etcdOptions *options.EtcdOptions) (*kratos.App, func(), error) {
+func wireApp(arg <-chan struct{}, appInfo bootstrap.AppInfo, config *server.Config, mySQLOptions *db.MySQLOptions, redisOptions *db.RedisOptions, etcdOptions *options.EtcdOptions) (*kratos.App, func(), error) {
 	logger := bootstrap.NewLogger(appInfo)
 	registrar := bootstrap.NewEtcdRegistrar(etcdOptions)
 	appConfig := bootstrap.AppConfig{

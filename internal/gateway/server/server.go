@@ -6,6 +6,8 @@ import (
 
 	authmw "github.com/fleezesd/xnightwatch/internal/pkg/middleware/auth"
 	idempotentmw "github.com/fleezesd/xnightwatch/internal/pkg/middleware/idempotent"
+	"github.com/fleezesd/xnightwatch/internal/pkg/middleware/logging"
+	"github.com/fleezesd/xnightwatch/internal/pkg/middleware/validate"
 	"github.com/fleezesd/xnightwatch/pkg/i18n"
 	"github.com/fleezesd/xnightwatch/pkg/idempotent"
 	"github.com/fleezesd/xnightwatch/pkg/log"
@@ -25,17 +27,16 @@ import (
 	xmetrics "github.com/fleezesd/xnightwatch/internal/pkg/metrics"
 	i18nmw "github.com/fleezesd/xnightwatch/internal/pkg/middleware/i18n"
 	krtlog "github.com/go-kratos/kratos/v2/log"
-	"go.opentelemetry.io/otel/metric"
 )
 
 // ProviderSet is server providers.
-var ProviderSet = wire.NewSet(NewServers, NewGRPCServer, NewHTTPServer)
+var ProviderSet = wire.NewSet(NewServers, NewGRPCServer, NewHTTPServer, NewMiddlewares)
 
 func NewServers(hs *http.Server, gs *grpc.Server) []transport.Server {
 	return []transport.Server{hs, gs}
 }
 
-func NewMiddlewares(logger krtlog.Logger, idt *idempotent.Idempotent, a authmw.AuthProvider, meter metric.Meter) []middleware.Middleware {
+func NewMiddlewares(logger krtlog.Logger, idt *idempotent.Idempotent, a authmw.AuthProvider, v validate.IValidator) []middleware.Middleware {
 	return []middleware.Middleware{
 		recovery.Recovery(
 			recovery.WithHandler(func(ctx context.Context, req, err any) error {
@@ -53,6 +54,8 @@ func NewMiddlewares(logger krtlog.Logger, idt *idempotent.Idempotent, a authmw.A
 		ratelimit.Server(),
 		tracing.Server(),
 		selector.Server(authmw.Auth(a)).Match(NewWhiteListMatcher()).Build(),
+		validate.Validator(v),
+		logging.Server(logger),
 	}
 }
 
