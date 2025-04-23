@@ -6,10 +6,39 @@ info:
     title: Gateway API
     version: 0.0.1
 paths:
+    /v1/miners:
+        post:
+            tags:
+                - Gateway
+            description: CreateMiner
+            operationId: Gateway_CreateMiner
+            requestBody:
+                content:
+                    application/json: {}
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+    /v1/minersets:
+        post:
+            tags:
+                - Gateway
+            description: CreateMinerSet
+            operationId: Gateway_CreateMinerSet
+            requestBody:
+                content:
+                    application/json: {}
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
     /version:
         get:
             tags:
                 - Gateway
+            description: GetVersion
             operationId: Gateway_GetVersion
             responses:
                 "200":

@@ -150,3 +150,303 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = GetVersionResponseValidationError{}
+
+// Validate checks the field values on MinerSet with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *MinerSet) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on MinerSet with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in MinerSetMultiError, or nil
+// if none found.
+func (m *MinerSet) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *MinerSet) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Name
+
+	// no validation rules for Replicas
+
+	// no validation rules for DisplayName
+
+	// no validation rules for DeletePolicy
+
+	if all {
+		switch v := interface{}(m.GetMinerTemplate()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, MinerSetValidationError{
+					field:  "MinerTemplate",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, MinerSetValidationError{
+					field:  "MinerTemplate",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetMinerTemplate()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return MinerSetValidationError{
+				field:  "MinerTemplate",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if all {
+		switch v := interface{}(m.GetCreatedAt()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, MinerSetValidationError{
+					field:  "CreatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, MinerSetValidationError{
+					field:  "CreatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetCreatedAt()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return MinerSetValidationError{
+				field:  "CreatedAt",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if all {
+		switch v := interface{}(m.GetUpdatedAt()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, MinerSetValidationError{
+					field:  "UpdatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, MinerSetValidationError{
+					field:  "UpdatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetUpdatedAt()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return MinerSetValidationError{
+				field:  "UpdatedAt",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return MinerSetMultiError(errors)
+	}
+
+	return nil
+}
+
+// MinerSetMultiError is an error wrapping multiple validation errors returned
+// by MinerSet.ValidateAll() if the designated constraints aren't met.
+type MinerSetMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m MinerSetMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m MinerSetMultiError) AllErrors() []error { return m }
+
+// MinerSetValidationError is the validation error returned by
+// MinerSet.Validate if the designated constraints aren't met.
+type MinerSetValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e MinerSetValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e MinerSetValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e MinerSetValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e MinerSetValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e MinerSetValidationError) ErrorName() string { return "MinerSetValidationError" }
+
+// Error satisfies the builtin error interface
+func (e MinerSetValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sMinerSet.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = MinerSetValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = MinerSetValidationError{}
+
+// Validate checks the field values on MinerTemplate with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *MinerTemplate) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on MinerTemplate with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in MinerTemplateMultiError, or
+// nil if none found.
+func (m *MinerTemplate) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *MinerTemplate) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for MinerType
+
+	// no validation rules for ChainName
+
+	// no validation rules for DataDir
+
+	if len(errors) > 0 {
+		return MinerTemplateMultiError(errors)
+	}
+
+	return nil
+}
+
+// MinerTemplateMultiError is an error wrapping multiple validation errors
+// returned by MinerTemplate.ValidateAll() if the designated constraints
+// aren't met.
+type MinerTemplateMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m MinerTemplateMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m MinerTemplateMultiError) AllErrors() []error { return m }
+
+// MinerTemplateValidationError is the validation error returned by
+// MinerTemplate.Validate if the designated constraints aren't met.
+type MinerTemplateValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e MinerTemplateValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e MinerTemplateValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e MinerTemplateValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e MinerTemplateValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e MinerTemplateValidationError) ErrorName() string { return "MinerTemplateValidationError" }
+
+// Error satisfies the builtin error interface
+func (e MinerTemplateValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sMinerTemplate.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = MinerTemplateValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = MinerTemplateValidationError{}

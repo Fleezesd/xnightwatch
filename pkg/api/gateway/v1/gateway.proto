@@ -3,6 +3,7 @@ syntax = "proto3";
 package api.gateway.v1;
 
 import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
 option go_package = "github.com/fleezesd/xnightwatch/api/gateway/v1;v1";
@@ -10,9 +11,26 @@ option java_multiple_files = true;
 option java_package = "api.gateway.v1";
 
 service Gateway {
+	// GetVersion
 	rpc GetVersion(google.protobuf.Empty) returns (GetVersionResponse) {
 		option (google.api.http) = {
 			get: "/version"
+		};
+	}
+
+	// CreateMinerSet
+	rpc CreateMinerSet(google.protobuf.Empty) returns (google.protobuf.Empty) {
+		option (google.api.http) = {
+			post: "/v1/minersets"
+			body: "*"
+		};
+	}
+
+	// CreateMiner
+	rpc CreateMiner(google.protobuf.Empty) returns (google.protobuf.Empty) {
+		option(google.api.http) = {
+			post: "/v1/miners",
+			body: "*",
 		};
 	}
 }
@@ -25,4 +43,21 @@ message GetVersionResponse {
 	string GoVersion = 5; 
 	string Compiler = 6;
 	string Platform = 7;
-  }
+}
+
+
+message MinerSet {
+	string name = 1;
+	int32 replicas = 2;
+	string displayName  = 3;
+	string deletePolicy = 4;
+	MinerTemplate MinerTemplate = 5;
+	google.protobuf.Timestamp createdAt = 6;
+	google.protobuf.Timestamp updatedAt = 7;	
+}
+
+message MinerTemplate {
+	string minerType = 1;
+	string chainName = 2;
+	string dataDir = 3;
+}

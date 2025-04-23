@@ -11,6 +11,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -115,11 +116,163 @@ func (x *GetVersionResponse) GetPlatform() string {
 	return ""
 }
 
+type MinerSet struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Replicas      int32                  `protobuf:"varint,2,opt,name=replicas,proto3" json:"replicas,omitempty"`
+	DisplayName   string                 `protobuf:"bytes,3,opt,name=displayName,proto3" json:"displayName,omitempty"`
+	DeletePolicy  string                 `protobuf:"bytes,4,opt,name=deletePolicy,proto3" json:"deletePolicy,omitempty"`
+	MinerTemplate *MinerTemplate         `protobuf:"bytes,5,opt,name=MinerTemplate,proto3" json:"MinerTemplate,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=createdAt,proto3" json:"createdAt,omitempty"`
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=updatedAt,proto3" json:"updatedAt,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MinerSet) Reset() {
+	*x = MinerSet{}
+	mi := &file_gateway_v1_gateway_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MinerSet) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MinerSet) ProtoMessage() {}
+
+func (x *MinerSet) ProtoReflect() protoreflect.Message {
+	mi := &file_gateway_v1_gateway_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MinerSet.ProtoReflect.Descriptor instead.
+func (*MinerSet) Descriptor() ([]byte, []int) {
+	return file_gateway_v1_gateway_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *MinerSet) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *MinerSet) GetReplicas() int32 {
+	if x != nil {
+		return x.Replicas
+	}
+	return 0
+}
+
+func (x *MinerSet) GetDisplayName() string {
+	if x != nil {
+		return x.DisplayName
+	}
+	return ""
+}
+
+func (x *MinerSet) GetDeletePolicy() string {
+	if x != nil {
+		return x.DeletePolicy
+	}
+	return ""
+}
+
+func (x *MinerSet) GetMinerTemplate() *MinerTemplate {
+	if x != nil {
+		return x.MinerTemplate
+	}
+	return nil
+}
+
+func (x *MinerSet) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
+func (x *MinerSet) GetUpdatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return nil
+}
+
+type MinerTemplate struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	MinerType     string                 `protobuf:"bytes,1,opt,name=minerType,proto3" json:"minerType,omitempty"`
+	ChainName     string                 `protobuf:"bytes,2,opt,name=chainName,proto3" json:"chainName,omitempty"`
+	DataDir       string                 `protobuf:"bytes,3,opt,name=dataDir,proto3" json:"dataDir,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *MinerTemplate) Reset() {
+	*x = MinerTemplate{}
+	mi := &file_gateway_v1_gateway_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *MinerTemplate) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*MinerTemplate) ProtoMessage() {}
+
+func (x *MinerTemplate) ProtoReflect() protoreflect.Message {
+	mi := &file_gateway_v1_gateway_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use MinerTemplate.ProtoReflect.Descriptor instead.
+func (*MinerTemplate) Descriptor() ([]byte, []int) {
+	return file_gateway_v1_gateway_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *MinerTemplate) GetMinerType() string {
+	if x != nil {
+		return x.MinerType
+	}
+	return ""
+}
+
+func (x *MinerTemplate) GetChainName() string {
+	if x != nil {
+		return x.ChainName
+	}
+	return ""
+}
+
+func (x *MinerTemplate) GetDataDir() string {
+	if x != nil {
+		return x.DataDir
+	}
+	return ""
+}
+
 var File_gateway_v1_gateway_proto protoreflect.FileDescriptor
 
 const file_gateway_v1_gateway_proto_rawDesc = "" +
 	"\n" +
-	"\x18gateway/v1/gateway.proto\x12\x0eapi.gateway.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1bgoogle/protobuf/empty.proto\"\xea\x01\n" +
+	"\x18gateway/v1/gateway.proto\x12\x0eapi.gateway.v1\x1a\x1cgoogle/api/annotations.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\"\xea\x01\n" +
 	"\x12GetVersionResponse\x12\x1e\n" +
 	"\n" +
 	"GitVersion\x18\x01 \x01(\tR\n" +
@@ -129,11 +282,26 @@ const file_gateway_v1_gateway_proto_rawDesc = "" +
 	"\tBuildDate\x18\x04 \x01(\tR\tBuildDate\x12\x1c\n" +
 	"\tGoVersion\x18\x05 \x01(\tR\tGoVersion\x12\x1a\n" +
 	"\bCompiler\x18\x06 \x01(\tR\bCompiler\x12\x1a\n" +
-	"\bPlatform\x18\a \x01(\tR\bPlatform2e\n" +
+	"\bPlatform\x18\a \x01(\tR\bPlatform\"\xb9\x02\n" +
+	"\bMinerSet\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1a\n" +
+	"\breplicas\x18\x02 \x01(\x05R\breplicas\x12 \n" +
+	"\vdisplayName\x18\x03 \x01(\tR\vdisplayName\x12\"\n" +
+	"\fdeletePolicy\x18\x04 \x01(\tR\fdeletePolicy\x12C\n" +
+	"\rMinerTemplate\x18\x05 \x01(\v2\x1d.api.gateway.v1.MinerTemplateR\rMinerTemplate\x128\n" +
+	"\tcreatedAt\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x128\n" +
+	"\tupdatedAt\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"e\n" +
+	"\rMinerTemplate\x12\x1c\n" +
+	"\tminerType\x18\x01 \x01(\tR\tminerType\x12\x1c\n" +
+	"\tchainName\x18\x02 \x01(\tR\tchainName\x12\x18\n" +
+	"\adataDir\x18\x03 \x01(\tR\adataDir2\x97\x02\n" +
 	"\aGateway\x12Z\n" +
 	"\n" +
 	"GetVersion\x12\x16.google.protobuf.Empty\x1a\".api.gateway.v1.GetVersionResponse\"\x10\x82\xd3\xe4\x93\x02\n" +
-	"\x12\b/versionBE\n" +
+	"\x12\b/version\x12Z\n" +
+	"\x0eCreateMinerSet\x12\x16.google.protobuf.Empty\x1a\x16.google.protobuf.Empty\"\x18\x82\xd3\xe4\x93\x02\x12:\x01*\"\r/v1/minersets\x12T\n" +
+	"\vCreateMiner\x12\x16.google.protobuf.Empty\x1a\x16.google.protobuf.Empty\"\x15\x82\xd3\xe4\x93\x02\x0f:\x01*\"\n" +
+	"/v1/minersBE\n" +
 	"\x0eapi.gateway.v1P\x01Z1github.com/fleezesd/xnightwatch/api/gateway/v1;v1b\x06proto3"
 
 var (
@@ -148,19 +316,29 @@ func file_gateway_v1_gateway_proto_rawDescGZIP() []byte {
 	return file_gateway_v1_gateway_proto_rawDescData
 }
 
-var file_gateway_v1_gateway_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_gateway_v1_gateway_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_gateway_v1_gateway_proto_goTypes = []any{
-	(*GetVersionResponse)(nil), // 0: api.gateway.v1.GetVersionResponse
-	(*emptypb.Empty)(nil),      // 1: google.protobuf.Empty
+	(*GetVersionResponse)(nil),    // 0: api.gateway.v1.GetVersionResponse
+	(*MinerSet)(nil),              // 1: api.gateway.v1.MinerSet
+	(*MinerTemplate)(nil),         // 2: api.gateway.v1.MinerTemplate
+	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),         // 4: google.protobuf.Empty
 }
 var file_gateway_v1_gateway_proto_depIdxs = []int32{
-	1, // 0: api.gateway.v1.Gateway.GetVersion:input_type -> google.protobuf.Empty
-	0, // 1: api.gateway.v1.Gateway.GetVersion:output_type -> api.gateway.v1.GetVersionResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	2, // 0: api.gateway.v1.MinerSet.MinerTemplate:type_name -> api.gateway.v1.MinerTemplate
+	3, // 1: api.gateway.v1.MinerSet.createdAt:type_name -> google.protobuf.Timestamp
+	3, // 2: api.gateway.v1.MinerSet.updatedAt:type_name -> google.protobuf.Timestamp
+	4, // 3: api.gateway.v1.Gateway.GetVersion:input_type -> google.protobuf.Empty
+	4, // 4: api.gateway.v1.Gateway.CreateMinerSet:input_type -> google.protobuf.Empty
+	4, // 5: api.gateway.v1.Gateway.CreateMiner:input_type -> google.protobuf.Empty
+	0, // 6: api.gateway.v1.Gateway.GetVersion:output_type -> api.gateway.v1.GetVersionResponse
+	4, // 7: api.gateway.v1.Gateway.CreateMinerSet:output_type -> google.protobuf.Empty
+	4, // 8: api.gateway.v1.Gateway.CreateMiner:output_type -> google.protobuf.Empty
+	6, // [6:9] is the sub-list for method output_type
+	3, // [3:6] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_gateway_v1_gateway_proto_init() }
@@ -174,7 +352,7 @@ func file_gateway_v1_gateway_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_gateway_v1_gateway_proto_rawDesc), len(file_gateway_v1_gateway_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

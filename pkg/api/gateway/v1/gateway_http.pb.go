@@ -20,15 +20,24 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
+const OperationGatewayCreateMiner = "/api.gateway.v1.Gateway/CreateMiner"
+const OperationGatewayCreateMinerSet = "/api.gateway.v1.Gateway/CreateMinerSet"
 const OperationGatewayGetVersion = "/api.gateway.v1.Gateway/GetVersion"
 
 type GatewayHTTPServer interface {
+	// CreateMiner CreateMiner
+	CreateMiner(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
+	// CreateMinerSet CreateMinerSet
+	CreateMinerSet(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
+	// GetVersion GetVersion
 	GetVersion(context.Context, *emptypb.Empty) (*GetVersionResponse, error)
 }
 
 func RegisterGatewayHTTPServer(s *http.Server, srv GatewayHTTPServer) {
 	r := s.Route("/")
 	r.GET("/version", _Gateway_GetVersion0_HTTP_Handler(srv))
+	r.POST("/v1/minersets", _Gateway_CreateMinerSet0_HTTP_Handler(srv))
+	r.POST("/v1/miners", _Gateway_CreateMiner0_HTTP_Handler(srv))
 }
 
 func _Gateway_GetVersion0_HTTP_Handler(srv GatewayHTTPServer) func(ctx http.Context) error {
@@ -50,7 +59,53 @@ func _Gateway_GetVersion0_HTTP_Handler(srv GatewayHTTPServer) func(ctx http.Cont
 	}
 }
 
+func _Gateway_CreateMinerSet0_HTTP_Handler(srv GatewayHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in emptypb.Empty
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationGatewayCreateMinerSet)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.CreateMinerSet(ctx, req.(*emptypb.Empty))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*emptypb.Empty)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Gateway_CreateMiner0_HTTP_Handler(srv GatewayHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in emptypb.Empty
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationGatewayCreateMiner)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.CreateMiner(ctx, req.(*emptypb.Empty))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*emptypb.Empty)
+		return ctx.Result(200, reply)
+	}
+}
+
 type GatewayHTTPClient interface {
+	CreateMiner(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	CreateMinerSet(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	GetVersion(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *GetVersionResponse, err error)
 }
 
@@ -60,6 +115,32 @@ type GatewayHTTPClientImpl struct {
 
 func NewGatewayHTTPClient(client *http.Client) GatewayHTTPClient {
 	return &GatewayHTTPClientImpl{client}
+}
+
+func (c *GatewayHTTPClientImpl) CreateMiner(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "/v1/miners"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationGatewayCreateMiner))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
+func (c *GatewayHTTPClientImpl) CreateMinerSet(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "/v1/minersets"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationGatewayCreateMinerSet))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
 }
 
 func (c *GatewayHTTPClientImpl) GetVersion(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*GetVersionResponse, error) {
