@@ -4,19 +4,29 @@ import (
 	"github.com/fleezesd/xnightwatch/internal/gateway/service"
 	"github.com/fleezesd/xnightwatch/internal/pkg/pprof"
 	v1 "github.com/fleezesd/xnightwatch/pkg/api/gateway/v1"
-	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/middleware/recovery"
+	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/go-kratos/swagger-api/openapiv2"
+	"github.com/gorilla/handlers"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 // NewHTTPServer new an HTTP server.
-func NewHTTPServer(c *Config, gw *service.GatewayService, logger log.Logger) *http.Server {
+func NewHTTPServer(c *Config, gw *service.GatewayService, middleware []middleware.Middleware) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
-			recovery.Recovery(),
+			middleware...,
 		),
+		http.Filter(handlers.CORS(
+			handlers.AllowedHeaders([]string{
+				"X-Requested-With",
+				"Content-Type",
+				"Authorization",
+				"X-Idepotent-ID",
+			}),
+			handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
+			handlers.AllowedOrigins([]string{"*"}),
+		)),
 	}
 	if c.HTTP.Network != "" {
 		opts = append(opts, http.Network(c.HTTP.Network))

@@ -3,16 +3,15 @@ package server
 import (
 	"github.com/fleezesd/xnightwatch/internal/gateway/service"
 	v1 "github.com/fleezesd/xnightwatch/pkg/api/gateway/v1"
-	"github.com/go-kratos/kratos/v2/log"
-	"github.com/go-kratos/kratos/v2/middleware/recovery"
+	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 )
 
 // NewGRPCServer new a gRPC server.
-func NewGRPCServer(c *Config, gw *service.GatewayService, logger log.Logger) *grpc.Server {
+func NewGRPCServer(c *Config, gw *service.GatewayService, middlewares []middleware.Middleware) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
-			recovery.Recovery(),
+			middlewares...,
 		),
 	}
 	if c.GRPC.Network != "" {

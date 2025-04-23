@@ -1,3 +1,4 @@
+// go:build wireinject
 //go:build wireinject
 // +build wireinject
 
@@ -12,8 +13,10 @@ import (
 	"github.com/fleezesd/xnightwatch/internal/gateway/server"
 	"github.com/fleezesd/xnightwatch/internal/gateway/service"
 	"github.com/fleezesd/xnightwatch/internal/gateway/store"
+	customvalidation "github.com/fleezesd/xnightwatch/internal/gateway/validation"
 	"github.com/fleezesd/xnightwatch/internal/pkg/bootstrap"
 	"github.com/fleezesd/xnightwatch/internal/pkg/idempotent"
+	"github.com/fleezesd/xnightwatch/internal/pkg/validation"
 	"github.com/fleezesd/xnightwatch/pkg/db"
 	genericoptions "github.com/fleezesd/xnightwatch/pkg/options"
 	"github.com/go-kratos/kratos/v2"
@@ -36,6 +39,9 @@ func wireApp(
 		db.ProviderSet,
 		biz.ProviderSet,
 		service.ProviderSet,
+		validation.ProviderSet,
+		idempotent.ProviderSet,
+		customvalidation.ProviderSet,
 	)
 
 	return nil, nil, nil

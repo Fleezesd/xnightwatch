@@ -11,7 +11,10 @@ import (
 	"github.com/fleezesd/xnightwatch/internal/gateway/server"
 	"github.com/fleezesd/xnightwatch/internal/gateway/service"
 	"github.com/fleezesd/xnightwatch/internal/gateway/store"
+	"github.com/fleezesd/xnightwatch/internal/gateway/validation"
 	"github.com/fleezesd/xnightwatch/internal/pkg/bootstrap"
+	"github.com/fleezesd/xnightwatch/internal/pkg/idempotent"
+	validation2 "github.com/fleezesd/xnightwatch/internal/pkg/validation"
 	"github.com/fleezesd/xnightwatch/pkg/db"
 	"github.com/fleezesd/xnightwatch/pkg/options"
 	"github.com/go-kratos/kratos/v2"
@@ -34,10 +37,24 @@ func wireApp(arg <-chan struct{}, appInfo bootstrap.AppInfo, config *server.Conf
 	datastore := store.NewStore(gormDB)
 	bizBiz := biz.NewBiz(datastore)
 	gatewayService := service.NewGatewayService(bizBiz)
-	httpServer := server.NewHTTPServer(config, gatewayService, logger)
-	grpcServer := server.NewGRPCServer(config, gatewayService, logger)
-	v := server.NewServers(httpServer, grpcServer)
-	app := bootstrap.NewApp(appConfig, v...)
+	client, err := db.NewRedis(redisOptions)
+	if err != nil {
+		return nil, nil, err
+	}
+	idempotentIdempotent, err := idempotent.NewIdempotent(client)
+	if err != nil {
+		return nil, nil, err
+	}
+	validator, err := validation.New(datastore)
+	if err != nil {
+		return nil, nil, err
+	}
+	validationValidator := validation2.New(validator)
+	v := server.NewMiddlewares(logger, idempotentIdempotent, validationValidator)
+	httpServer := server.NewHTTPServer(config, gatewayService, v)
+	grpcServer := server.NewGRPCServer(config, gatewayService, v)
+	v2 := server.NewServers(httpServer, grpcServer)
+	app := bootstrap.NewApp(appConfig, v2...)
 	return app, func() {
 	}, nil
 }

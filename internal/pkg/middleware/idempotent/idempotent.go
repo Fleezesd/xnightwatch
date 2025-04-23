@@ -3,9 +3,9 @@ package idempotent
 import (
 	"context"
 
+	"github.com/fleezesd/xnightwatch/internal/pkg/idempotent"
 	v1 "github.com/fleezesd/xnightwatch/pkg/api/gateway/v1"
 	"github.com/fleezesd/xnightwatch/pkg/api/zerrors"
-	"github.com/fleezesd/xnightwatch/pkg/idempotent"
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/selector"
 	"github.com/go-kratos/kratos/v2/transport"

@@ -4,12 +4,11 @@ import (
 	"context"
 	"encoding/json"
 
-	authmw "github.com/fleezesd/xnightwatch/internal/pkg/middleware/auth"
+	"github.com/fleezesd/xnightwatch/internal/pkg/idempotent"
 	idempotentmw "github.com/fleezesd/xnightwatch/internal/pkg/middleware/idempotent"
 	"github.com/fleezesd/xnightwatch/internal/pkg/middleware/logging"
 	"github.com/fleezesd/xnightwatch/internal/pkg/middleware/validate"
 	"github.com/fleezesd/xnightwatch/pkg/i18n"
-	"github.com/fleezesd/xnightwatch/pkg/idempotent"
 	"github.com/fleezesd/xnightwatch/pkg/log"
 	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/metrics"
@@ -36,7 +35,7 @@ func NewServers(hs *http.Server, gs *grpc.Server) []transport.Server {
 	return []transport.Server{hs, gs}
 }
 
-func NewMiddlewares(logger krtlog.Logger, idt *idempotent.Idempotent, a authmw.AuthProvider, v validate.IValidator) []middleware.Middleware {
+func NewMiddlewares(logger krtlog.Logger, idt *idempotent.Idempotent, v validate.IValidator) []middleware.Middleware {
 	return []middleware.Middleware{
 		recovery.Recovery(
 			recovery.WithHandler(func(ctx context.Context, req, err any) error {
@@ -53,7 +52,6 @@ func NewMiddlewares(logger krtlog.Logger, idt *idempotent.Idempotent, a authmw.A
 		idempotentmw.Idempotent(idt),
 		ratelimit.Server(),
 		tracing.Server(),
-		selector.Server(authmw.Auth(a)).Match(NewWhiteListMatcher()).Build(),
 		validate.Validator(v),
 		logging.Server(logger),
 	}
