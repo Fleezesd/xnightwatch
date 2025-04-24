@@ -268,6 +268,110 @@ func (x *MinerTemplate) GetDataDir() string {
 	return ""
 }
 
+type ListMinerSetRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Limit         int64                  `protobuf:"varint,1,opt,name=limit,proto3" json:"limit,omitempty"`
+	Offset        int64                  `protobuf:"varint,2,opt,name=offset,proto3" json:"offset,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListMinerSetRequest) Reset() {
+	*x = ListMinerSetRequest{}
+	mi := &file_gateway_v1_gateway_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListMinerSetRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListMinerSetRequest) ProtoMessage() {}
+
+func (x *ListMinerSetRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_gateway_v1_gateway_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListMinerSetRequest.ProtoReflect.Descriptor instead.
+func (*ListMinerSetRequest) Descriptor() ([]byte, []int) {
+	return file_gateway_v1_gateway_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ListMinerSetRequest) GetLimit() int64 {
+	if x != nil {
+		return x.Limit
+	}
+	return 0
+}
+
+func (x *ListMinerSetRequest) GetOffset() int64 {
+	if x != nil {
+		return x.Offset
+	}
+	return 0
+}
+
+type ListMinerSetResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TotalCount    int64                  `protobuf:"varint,1,opt,name=totalCount,proto3" json:"totalCount,omitempty"`
+	MinerSets     []*MinerSet            `protobuf:"bytes,2,rep,name=MinerSets,proto3" json:"MinerSets,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListMinerSetResponse) Reset() {
+	*x = ListMinerSetResponse{}
+	mi := &file_gateway_v1_gateway_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListMinerSetResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListMinerSetResponse) ProtoMessage() {}
+
+func (x *ListMinerSetResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_gateway_v1_gateway_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListMinerSetResponse.ProtoReflect.Descriptor instead.
+func (*ListMinerSetResponse) Descriptor() ([]byte, []int) {
+	return file_gateway_v1_gateway_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ListMinerSetResponse) GetTotalCount() int64 {
+	if x != nil {
+		return x.TotalCount
+	}
+	return 0
+}
+
+func (x *ListMinerSetResponse) GetMinerSets() []*MinerSet {
+	if x != nil {
+		return x.MinerSets
+	}
+	return nil
+}
+
 var File_gateway_v1_gateway_proto protoreflect.FileDescriptor
 
 const file_gateway_v1_gateway_proto_rawDesc = "" +
@@ -294,11 +398,20 @@ const file_gateway_v1_gateway_proto_rawDesc = "" +
 	"\rMinerTemplate\x12\x1c\n" +
 	"\tminerType\x18\x01 \x01(\tR\tminerType\x12\x1c\n" +
 	"\tchainName\x18\x02 \x01(\tR\tchainName\x12\x18\n" +
-	"\adataDir\x18\x03 \x01(\tR\adataDir2\x97\x02\n" +
+	"\adataDir\x18\x03 \x01(\tR\adataDir\"C\n" +
+	"\x13ListMinerSetRequest\x12\x14\n" +
+	"\x05limit\x18\x01 \x01(\x03R\x05limit\x12\x16\n" +
+	"\x06offset\x18\x02 \x01(\x03R\x06offset\"n\n" +
+	"\x14ListMinerSetResponse\x12\x1e\n" +
+	"\n" +
+	"totalCount\x18\x01 \x01(\x03R\n" +
+	"totalCount\x126\n" +
+	"\tMinerSets\x18\x02 \x03(\v2\x18.api.gateway.v1.MinerSetR\tMinerSets2\x89\x03\n" +
 	"\aGateway\x12Z\n" +
 	"\n" +
 	"GetVersion\x12\x16.google.protobuf.Empty\x1a\".api.gateway.v1.GetVersionResponse\"\x10\x82\xd3\xe4\x93\x02\n" +
-	"\x12\b/version\x12Z\n" +
+	"\x12\b/version\x12p\n" +
+	"\fListMinerSet\x12#.api.gateway.v1.ListMinerSetRequest\x1a$.api.gateway.v1.ListMinerSetResponse\"\x15\x82\xd3\xe4\x93\x02\x0f\x12\r/v1/minersets\x12Z\n" +
 	"\x0eCreateMinerSet\x12\x16.google.protobuf.Empty\x1a\x16.google.protobuf.Empty\"\x18\x82\xd3\xe4\x93\x02\x12:\x01*\"\r/v1/minersets\x12T\n" +
 	"\vCreateMiner\x12\x16.google.protobuf.Empty\x1a\x16.google.protobuf.Empty\"\x15\x82\xd3\xe4\x93\x02\x0f:\x01*\"\n" +
 	"/v1/minersBE\n" +
@@ -316,29 +429,34 @@ func file_gateway_v1_gateway_proto_rawDescGZIP() []byte {
 	return file_gateway_v1_gateway_proto_rawDescData
 }
 
-var file_gateway_v1_gateway_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_gateway_v1_gateway_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_gateway_v1_gateway_proto_goTypes = []any{
 	(*GetVersionResponse)(nil),    // 0: api.gateway.v1.GetVersionResponse
 	(*MinerSet)(nil),              // 1: api.gateway.v1.MinerSet
 	(*MinerTemplate)(nil),         // 2: api.gateway.v1.MinerTemplate
-	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),         // 4: google.protobuf.Empty
+	(*ListMinerSetRequest)(nil),   // 3: api.gateway.v1.ListMinerSetRequest
+	(*ListMinerSetResponse)(nil),  // 4: api.gateway.v1.ListMinerSetResponse
+	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),         // 6: google.protobuf.Empty
 }
 var file_gateway_v1_gateway_proto_depIdxs = []int32{
 	2, // 0: api.gateway.v1.MinerSet.MinerTemplate:type_name -> api.gateway.v1.MinerTemplate
-	3, // 1: api.gateway.v1.MinerSet.createdAt:type_name -> google.protobuf.Timestamp
-	3, // 2: api.gateway.v1.MinerSet.updatedAt:type_name -> google.protobuf.Timestamp
-	4, // 3: api.gateway.v1.Gateway.GetVersion:input_type -> google.protobuf.Empty
-	4, // 4: api.gateway.v1.Gateway.CreateMinerSet:input_type -> google.protobuf.Empty
-	4, // 5: api.gateway.v1.Gateway.CreateMiner:input_type -> google.protobuf.Empty
-	0, // 6: api.gateway.v1.Gateway.GetVersion:output_type -> api.gateway.v1.GetVersionResponse
-	4, // 7: api.gateway.v1.Gateway.CreateMinerSet:output_type -> google.protobuf.Empty
-	4, // 8: api.gateway.v1.Gateway.CreateMiner:output_type -> google.protobuf.Empty
-	6, // [6:9] is the sub-list for method output_type
-	3, // [3:6] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	5, // 1: api.gateway.v1.MinerSet.createdAt:type_name -> google.protobuf.Timestamp
+	5, // 2: api.gateway.v1.MinerSet.updatedAt:type_name -> google.protobuf.Timestamp
+	1, // 3: api.gateway.v1.ListMinerSetResponse.MinerSets:type_name -> api.gateway.v1.MinerSet
+	6, // 4: api.gateway.v1.Gateway.GetVersion:input_type -> google.protobuf.Empty
+	3, // 5: api.gateway.v1.Gateway.ListMinerSet:input_type -> api.gateway.v1.ListMinerSetRequest
+	6, // 6: api.gateway.v1.Gateway.CreateMinerSet:input_type -> google.protobuf.Empty
+	6, // 7: api.gateway.v1.Gateway.CreateMiner:input_type -> google.protobuf.Empty
+	0, // 8: api.gateway.v1.Gateway.GetVersion:output_type -> api.gateway.v1.GetVersionResponse
+	4, // 9: api.gateway.v1.Gateway.ListMinerSet:output_type -> api.gateway.v1.ListMinerSetResponse
+	6, // 10: api.gateway.v1.Gateway.CreateMinerSet:output_type -> google.protobuf.Empty
+	6, // 11: api.gateway.v1.Gateway.CreateMiner:output_type -> google.protobuf.Empty
+	8, // [8:12] is the sub-list for method output_type
+	4, // [4:8] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_gateway_v1_gateway_proto_init() }
@@ -352,7 +470,7 @@ func file_gateway_v1_gateway_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_gateway_v1_gateway_proto_rawDesc), len(file_gateway_v1_gateway_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

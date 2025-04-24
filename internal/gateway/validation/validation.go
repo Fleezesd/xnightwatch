@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/fleezesd/xnightwatch/internal/gateway/store"
+	v1 "github.com/fleezesd/xnightwatch/pkg/api/gateway/v1"
 	"github.com/google/wire"
 )
 
@@ -23,6 +24,7 @@ func New(ds store.IStore) (*validator, error) {
 	return vd, nil
 }
 
-func (vd *validator) ValidateListMinerSetRequest(ctx context.Context, req any) error {
+// ValidateListMinerSetRequest is a method that validates the ListMinerSetRequest input.
+func (vd *validator) ValidateListMinerSetRequest(ctx context.Context, req *v1.ListMinerSetRequest) error {
 	return nil
 }

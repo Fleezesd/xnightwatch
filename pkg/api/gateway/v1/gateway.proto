@@ -18,6 +18,13 @@ service Gateway {
 		};
 	}
 
+	// ListMinerSet
+	rpc ListMinerSet(ListMinerSetRequest) returns (ListMinerSetResponse) {
+		option (google.api.http) = {
+			get: "/v1/minersets"
+		};
+	}
+
 	// CreateMinerSet
 	rpc CreateMinerSet(google.protobuf.Empty) returns (google.protobuf.Empty) {
 		option (google.api.http) = {
@@ -61,3 +68,14 @@ message MinerTemplate {
 	string chainName = 2;
 	string dataDir = 3;
 }
+
+message ListMinerSetRequest {
+	int64 limit = 1;
+	int64 offset = 2;
+}
+
+message ListMinerSetResponse {
+	int64 totalCount = 1;
+	repeated MinerSet MinerSets = 2;
+}
+

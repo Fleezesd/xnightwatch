@@ -52,6 +52,43 @@
       }
     },
     "/v1/minersets": {
+      "get": {
+        "summary": "ListMinerSet",
+        "operationId": "Gateway_ListMinerSet",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListMinerSetResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "Gateway"
+        ]
+      },
       "post": {
         "summary": "CreateMinerSet",
         "operationId": "Gateway_CreateMinerSet",
@@ -161,6 +198,65 @@
           "type": "string"
         },
         "Platform": {
+          "type": "string"
+        }
+      }
+    },
+    "v1ListMinerSetResponse": {
+      "type": "object",
+      "properties": {
+        "totalCount": {
+          "type": "string",
+          "format": "int64"
+        },
+        "MinerSets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1MinerSet"
+          }
+        }
+      }
+    },
+    "v1MinerSet": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "replicas": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "deletePolicy": {
+          "type": "string"
+        },
+        "MinerTemplate": {
+          "$ref": "#/definitions/v1MinerTemplate"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1MinerTemplate": {
+      "type": "object",
+      "properties": {
+        "minerType": {
+          "type": "string"
+        },
+        "chainName": {
+          "type": "string"
+        },
+        "dataDir": {
           "type": "string"
         }
       }

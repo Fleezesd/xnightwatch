@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	Gateway_GetVersion_FullMethodName     = "/api.gateway.v1.Gateway/GetVersion"
+	Gateway_ListMinerSet_FullMethodName   = "/api.gateway.v1.Gateway/ListMinerSet"
 	Gateway_CreateMinerSet_FullMethodName = "/api.gateway.v1.Gateway/CreateMinerSet"
 	Gateway_CreateMiner_FullMethodName    = "/api.gateway.v1.Gateway/CreateMiner"
 )
@@ -31,6 +32,8 @@ const (
 type GatewayClient interface {
 	// GetVersion
 	GetVersion(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetVersionResponse, error)
+	// ListMinerSet
+	ListMinerSet(ctx context.Context, in *ListMinerSetRequest, opts ...grpc.CallOption) (*ListMinerSetResponse, error)
 	// CreateMinerSet
 	CreateMinerSet(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// CreateMiner
@@ -49,6 +52,16 @@ func (c *gatewayClient) GetVersion(ctx context.Context, in *emptypb.Empty, opts 
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetVersionResponse)
 	err := c.cc.Invoke(ctx, Gateway_GetVersion_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gatewayClient) ListMinerSet(ctx context.Context, in *ListMinerSetRequest, opts ...grpc.CallOption) (*ListMinerSetResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(ListMinerSetResponse)
+	err := c.cc.Invoke(ctx, Gateway_ListMinerSet_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -81,6 +94,8 @@ func (c *gatewayClient) CreateMiner(ctx context.Context, in *emptypb.Empty, opts
 type GatewayServer interface {
 	// GetVersion
 	GetVersion(context.Context, *emptypb.Empty) (*GetVersionResponse, error)
+	// ListMinerSet
+	ListMinerSet(context.Context, *ListMinerSetRequest) (*ListMinerSetResponse, error)
 	// CreateMinerSet
 	CreateMinerSet(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	// CreateMiner
@@ -97,6 +112,9 @@ type UnimplementedGatewayServer struct{}
 
 func (UnimplementedGatewayServer) GetVersion(context.Context, *emptypb.Empty) (*GetVersionResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetVersion not implemented")
+}
+func (UnimplementedGatewayServer) ListMinerSet(context.Context, *ListMinerSetRequest) (*ListMinerSetResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListMinerSet not implemented")
 }
 func (UnimplementedGatewayServer) CreateMinerSet(context.Context, *emptypb.Empty) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateMinerSet not implemented")
@@ -139,6 +157,24 @@ func _Gateway_GetVersion_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GatewayServer).GetVersion(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Gateway_ListMinerSet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListMinerSetRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GatewayServer).ListMinerSet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Gateway_ListMinerSet_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GatewayServer).ListMinerSet(ctx, req.(*ListMinerSetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -189,6 +225,10 @@ var Gateway_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetVersion",
 			Handler:    _Gateway_GetVersion_Handler,
+		},
+		{
+			MethodName: "ListMinerSet",
+			Handler:    _Gateway_ListMinerSet_Handler,
 		},
 		{
 			MethodName: "CreateMinerSet",

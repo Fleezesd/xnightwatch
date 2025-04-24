@@ -21,6 +21,27 @@ paths:
                     description: OK
                     content: {}
     /v1/minersets:
+        get:
+            tags:
+                - Gateway
+            description: ListMinerSet
+            operationId: Gateway_ListMinerSet
+            parameters:
+                - name: limit
+                  in: query
+                  schema:
+                    type: string
+                - name: offset
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/api.gateway.v1.ListMinerSetResponse'
         post:
             tags:
                 - Gateway
@@ -65,6 +86,44 @@ components:
                 Compiler:
                     type: string
                 Platform:
+                    type: string
+        api.gateway.v1.ListMinerSetResponse:
+            type: object
+            properties:
+                totalCount:
+                    type: string
+                MinerSets:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/api.gateway.v1.MinerSet'
+        api.gateway.v1.MinerSet:
+            type: object
+            properties:
+                name:
+                    type: string
+                replicas:
+                    type: integer
+                    format: int32
+                displayName:
+                    type: string
+                deletePolicy:
+                    type: string
+                MinerTemplate:
+                    $ref: '#/components/schemas/api.gateway.v1.MinerTemplate'
+                createdAt:
+                    type: string
+                    format: date-time
+                updatedAt:
+                    type: string
+                    format: date-time
+        api.gateway.v1.MinerTemplate:
+            type: object
+            properties:
+                minerType:
+                    type: string
+                chainName:
+                    type: string
+                dataDir:
                     type: string
 tags:
     - name: Gateway
