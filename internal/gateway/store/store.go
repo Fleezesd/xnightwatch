@@ -24,7 +24,7 @@ type IStore interface {
 	TX(context.Context, func(ctx context.Context) error) error
 	Chains() ChainStore
 	Miners() MinerStore
-	MinerSets() minerSetStore
+	MinerSets() MinerSetStore
 }
 
 // datastore is a concrete implementation of IStore interface.
@@ -77,6 +77,6 @@ func (ds *datastore) Miners() MinerStore {
 }
 
 // MinerSets returns a MinerSetStore that interacts with datastore.
-func (ds *datastore) MinerSets() minerSetStore {
-	return *newMinerSetStore(ds)
+func (ds *datastore) MinerSets() MinerSetStore {
+	return newMinerSetStore(ds)
 }

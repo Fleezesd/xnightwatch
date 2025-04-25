@@ -51,10 +51,10 @@ func (mr *MockIStoreMockRecorder) Chains() *gomock.Call {
 }
 
 // MinerSets mocks base method.
-func (m *MockIStore) MinerSets() minerSetStore {
+func (m *MockIStore) MinerSets() MinerSetStore {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "MinerSets")
-	ret0, _ := ret[0].(minerSetStore)
+	ret0, _ := ret[0].(MinerSetStore)
 	return ret0
 }
 
