@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:latest
+    restart: on-failure
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=xnightwatch
+      - MYSQL_USER=fleex
+      - MYSQL_PASSWORD=x666
+      - TZ=Asia/Shanghai
+    volumes:
+      - ${X_ROOT}/configs:/docker-entrypoint-initdb.d/  # 容器启动时，会自动执行/docker-entrypoint-initdb.d/目录下的所有.sql、.sql.gz                 
+    ports:
+      - "3306:3306"

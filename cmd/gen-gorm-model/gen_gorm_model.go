@@ -21,7 +21,7 @@ type Querier interface {
 
 var (
 	addr     = pflag.StringP("address", "a", "127.0.0.1:3306", "MySQL host address.")
-	username = pflag.StringP("username", "u", "root", "Username to connect to the database.")
+	username = pflag.StringP("username", "u", "fleex", "Username to connect to the database.")
 	password = pflag.StringP("password", "p", "x666", "Password to use when connecting to the database.")
 	dbname   = pflag.StringP("db", "d", "xnightwatch", "Database name to connect to.")
 
