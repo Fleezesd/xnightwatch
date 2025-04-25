@@ -13,6 +13,10 @@ import (
 	"github.com/fleezesd/xnightwatch/pkg/db"
 )
 
+import (
+	_ "github.com/fleezesd/xnightwatch/internal/nightwatch/watcher/all"
+)
+
 // Injectors from wire.go:
 
 func wireStoreClient(mySQLOptions *db.MySQLOptions) (store.Interface, error) {

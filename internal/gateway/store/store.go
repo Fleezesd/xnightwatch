@@ -1,5 +1,7 @@
 package store
 
+//go:generate mockgen -self_package=github.com/fleezesd/xnightwatch/internal/gateway/store -destination=mock_store.go -package=store github.com/fleezesd/xnightwatch/internal/gateway/store IStore,ChainStore,MinerStore,MinerSetStore
+
 import (
 	"context"
 	"sync"
@@ -19,7 +21,10 @@ type transactionKey struct{}
 
 // IStore is an interface defining the required methods for a Store.
 type IStore interface {
+	TX(context.Context, func(ctx context.Context) error) error
 	Chains() ChainStore
+	Miners() MinerStore
+	MinerSets() minerSetStore
 }
 
 // datastore is a concrete implementation of IStore interface.
@@ -51,7 +56,27 @@ func (ds *datastore) Core(ctx context.Context) *gorm.DB {
 	return ds.core
 }
 
+// TX is a method to execute a function inside a transaction, it takes a context and a function as parameters.
+func (ds *datastore) TX(ctx context.Context, fn func(ctx context.Context) error) error {
+	return ds.core.WithContext(ctx).Transaction(
+		func(tx *gorm.DB) error {
+			ctx = context.WithValue(ctx, transactionKey{}, tx)
+			return fn(ctx)
+		},
+	)
+}
+
 // Chains returns a ChainStore that interacts with datastore.
 func (ds *datastore) Chains() ChainStore {
-	return nil
+	return newChainStore(ds)
+}
+
+// Miners returns a MinerStore that interacts with datastore.
+func (ds *datastore) Miners() MinerStore {
+	return newMinerStore(ds)
+}
+
+// MinerSets returns a MinerSetStore that interacts with datastore.
+func (ds *datastore) MinerSets() minerSetStore {
+	return *newMinerSetStore(ds)
 }
