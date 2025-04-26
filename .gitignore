@@ -362,3 +362,4 @@ node_modules
 _book
 /test/data
 /test-scripts
+/controller-manager
