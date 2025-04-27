@@ -46,15 +46,19 @@ require (
 	gorm.io/driver/mysql v1.5.2
 	gorm.io/gen v0.3.24
 	gorm.io/gorm v1.25.5
+	k8s.io/api v0.33.0
+	k8s.io/apiextensions-apiserver v0.32.1
 	k8s.io/apimachinery v0.33.0
 	k8s.io/apiserver v0.33.0
 	k8s.io/client-go v0.33.0
+	k8s.io/code-generator v0.32.1
 	k8s.io/component-base v0.33.0
 	k8s.io/controller-manager v0.33.0
 	k8s.io/klog/v2 v2.130.1
 	k8s.io/kubernetes v1.33.0
 	k8s.io/utils v0.0.0-20241104100929-3ea5e8cea738
 	sigs.k8s.io/controller-runtime v0.20.4
+	sigs.k8s.io/structured-merge-diff/v4 v4.6.0
 )
 
 require (
@@ -191,16 +195,14 @@ require (
 	gorm.io/datatypes v1.2.0 // indirect
 	gorm.io/hints v1.1.0 // indirect
 	gorm.io/plugin/dbresolver v1.4.1 // indirect
-	k8s.io/api v0.33.0 // indirect
-	k8s.io/apiextensions-apiserver v0.32.1 // indirect
 	k8s.io/cloud-provider v0.33.0 // indirect
 	k8s.io/component-helpers v0.33.0 // indirect
+	k8s.io/gengo/v2 v2.0.0-20250207200755-1244d31929d7 // indirect
 	k8s.io/kube-controller-manager v0.33.0 // indirect
 	k8s.io/kube-openapi v0.0.0-20250318190949-c8a335a9a2ff // indirect
 	k8s.io/kubelet v0.33.0 // indirect
 	sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.31.2 // indirect
 	sigs.k8s.io/json v0.0.0-20241010143419-9aa6b5e7a4b3 // indirect
 	sigs.k8s.io/randfill v1.0.0 // indirect
-	sigs.k8s.io/structured-merge-diff/v4 v4.6.0 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )

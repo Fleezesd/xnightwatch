@@ -30,7 +30,7 @@ cd "${X_ROOT}"
 x::golang::setup_env
 
 DBG_CODEGEN="${DBG_CODEGEN:-0}"
-GENERATED_FILE_PREFIX="${GENERATED_FILE_PREFIX:-zz_generated.}"
+GENERATED_FILE_PREFIX="${GENERATED_FILE_PREFIx-zz_generated.}"
 UPDATE_API_KNOWN_VIOLATIONS="${UPDATE_API_KNOWN_VIOLATIONS:-}"
 API_KNOWN_VIOLATIONS_DIR="${API_KNOWN_VIOLATIONS_DIR:-"${X_ROOT}/api/api-rules"}"
 
@@ -138,7 +138,7 @@ function codegen::protobuf() {
       scripts/_update-generated-protobuf-dockerized.sh "${apis[@]}"
     else
       x::log::status "protoc ${PROTOC_VERSION} not found (can install with scripts/install-protoc.sh); generating containerized..."
-      build/run.sh scripts/_update-generated-protobuf-dockerized.sh "${apis[@]}"
+    #   build/run.sh scripts/_update-generated-protobuf-dockerized.sh "${apis[@]}"
     fi
 
     # Fix `pkg/apis/apps/v1beta1/generated.pb.go:49:10: undefined: ObjectReference` compile errors
@@ -638,11 +638,10 @@ function codegen::openapi() {
     openapi-gen \
         -v "${KUBE_VERBOSE}" \
         --go-header-file "${BOILERPLATE_FILENAME}" \
-        -O "${output_file}" \
-        -i 'k8s.io/apimachinery/pkg/apis/meta/v1,k8s.io/apimachinery/pkg/runtime,k8s.io/apimachinery/pkg/version,k8s.io/apimachinery/pkg/util/intstr,k8s.io/kubernetes/pkg/apis/core,k8s.io/api/core/v1,k8s.io/api/autoscaling/v1,k8s.io/api/coordination/v1,k8s.io/kubernetes/pkg/apis/flowcontrol,k8s.io/api/flowcontrol/v1,k8s.io/apiextensions-apiserver/pkg/apis/apiextensions,k8s.io/apiextensions-apiserver/pkg/apis/apiextensions/v1,k8s.io/kube-aggregator/pkg/apis/apiregistration,k8s.io/kube-aggregator/pkg/apis/apiregistration/v1,github.com/fleezesd/xnightwatch/pkg/apis/apps/v1beta1' \
-        --output-base "${GOPATH}/src" \
-        -p "${output_pkg}" \
+        --output-file "${output_file}" \
+        --output-pkg "${output_pkg}" \
         --report-filename "${report_file}" \
+        --output-dir "${output_dir}" \
         "${tag_pkgs[@]}" \
         "$@"
 
@@ -785,7 +784,6 @@ function codegen::listers() {
     lister-gen \
         -v "${KUBE_VERBOSE}" \
         --go-header-file "${BOILERPLATE_FILENAME}" \
-        --included-types-overrides core/v1/Namespace,core/v1/ConfigMap,core/v1/Event,core/v1/Secret \
         --output-dir "${X_ROOT}/pkg/generated/listers" \
         --output-pkg "${OUTPUT_PKG}/listers" \
         --plural-exceptions "${PLURAL_EXCEPTIONS}" \
@@ -828,7 +826,6 @@ function codegen::informers() {
     informer-gen \
         -v "${KUBE_VERBOSE}" \
         --go-header-file "${BOILERPLATE_FILENAME}" \
-        --included-types-overrides core/v1/Namespace,core/v1/ConfigMap,core/v1/Event,core/v1/Secret \
         --output-dir "${X_ROOT}/pkg/generated/informers" \
         --output-pkg "${OUTPUT_PKG}/informers" \
         --single-directory \
