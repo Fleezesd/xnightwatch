@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 for top in pkg
 do
   for d in $(find $top -type d)
