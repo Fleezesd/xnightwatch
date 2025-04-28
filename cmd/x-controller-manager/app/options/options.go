@@ -3,6 +3,7 @@ package options
 import (
 	cliflag "k8s.io/component-base/cli/flag"
 	"k8s.io/component-base/logs"
+	"k8s.io/component-base/metrics"
 )
 
 const (
@@ -11,7 +12,9 @@ const (
 )
 
 type Options struct {
-	Logs *logs.Options
+	Generic *GenericControllerManagerConfigurationOptions
+	Metrics *metrics.Options
+	Logs    *logs.Options
 }
 
 func NewOptions() (*Options, error) {
