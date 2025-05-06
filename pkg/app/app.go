@@ -142,6 +142,7 @@ func NewApp(name string, shortDesc string, opts ...Option) *App {
 		o(app)
 	}
 
+	app.buildCommand()
 	return app
 }
 

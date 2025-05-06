@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"sort"
 	"time"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
@@ -113,7 +114,7 @@ current state towards the desired state.`,
 		},
 	}
 	fs := cmd.Flags()
-	namedFlagSets := o.Flags()
+	namedFlagSets := o.Flags(KnownControllers(), DisabledControllers(), ControllerAliases())
 	version.AddFlags(namedFlagSets.FlagSet("global"))
 	globalflag.AddGlobalFlags(namedFlagSets.FlagSet("global"), cmd.Name(), logs.SkipLoggingConfigurationFlags())
 	for _, f := range namedFlagSets.FlagSets {
@@ -232,8 +233,34 @@ func (r *ControllerDescriptor) RequiresSpecialHandling() bool {
 }
 
 // KnownControllers returns all known controllers's name
-func KnownController() []string {
+func KnownControllers() []string {
 	return sets.StringKeySet(NewControllerDescriptors()).List()
+}
+
+// DisabledControllers returns a list of controllers that are disabled by default
+func DisabledControllers() []string {
+	var controllersDisabledByDefault []string
+
+	for name, c := range NewControllerDescriptors() {
+		if c.IsDisabledByDefault() {
+			controllersDisabledByDefault = append(controllersDisabledByDefault, name)
+		}
+	}
+
+	sort.Strings(controllersDisabledByDefault)
+
+	return controllersDisabledByDefault
+}
+
+// ControllerAliases returns a mapping of aliases to canonical controller names
+func ControllerAliases() map[string]string {
+	aliases := map[string]string{}
+	for name, c := range NewControllerDescriptors() {
+		for _, alias := range c.GetAliases() {
+			aliases[alias] = name
+		}
+	}
+	return aliases
 }
 
 func NewControllerDescriptors() map[string]*ControllerDescriptor {
