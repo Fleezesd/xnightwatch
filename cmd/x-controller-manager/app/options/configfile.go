@@ -13,10 +13,9 @@ import (
 	"k8s.io/klog/v2"
 )
 
-// LogOrWriteConfig logs the completed component config and writes it into the given file name as YAML, if either is enabled
-func LogOrWriteConfig(logger klog.Logger, fileName string, cfg *config.XControllerManagerConfiguration) error {
-	loggerV := logger.V(2)
-	if !loggerV.Enabled() && len(fileName) == 0 {
+// LogOrWriteConfig logs the completed component config and writes it into the given file name as YAML, if either is enabled.
+func LogOrWriteConfig(fileName string, cfg *config.XControllerManagerConfiguration) error {
+	if !(klog.V(2).Enabled() || len(fileName) > 0) {
 		return nil
 	}
 
@@ -25,8 +24,8 @@ func LogOrWriteConfig(logger klog.Logger, fileName string, cfg *config.XControll
 		return err
 	}
 
-	if loggerV.Enabled() {
-		loggerV.Info("Using component config", "config", buf.String())
+	if klog.V(2).Enabled() {
+		klog.Info("Using component config", "config", buf.String())
 	}
 
 	if len(fileName) > 0 {
@@ -38,7 +37,7 @@ func LogOrWriteConfig(logger klog.Logger, fileName string, cfg *config.XControll
 		if _, err := io.Copy(configFile, buf); err != nil {
 			return err
 		}
-		logger.Info("Wrote configuration", "file", fileName)
+		klog.InfoS("Wrote configuration", "file", fileName)
 		os.Exit(0)
 	}
 	return nil

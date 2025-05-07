@@ -12,13 +12,18 @@ import (
 	// to ensure that exec-entrypoint and run can make use of them.
 	"github.com/fleezesd/xnightwatch/cmd/x-controller-manager/app/config"
 	"github.com/fleezesd/xnightwatch/cmd/x-controller-manager/app/options"
+	"github.com/fleezesd/xnightwatch/internal/controller/apis/config/v1beta1"
 	"github.com/fleezesd/xnightwatch/internal/gateway/store"
+	"github.com/fleezesd/xnightwatch/pkg/db"
 	"github.com/fleezesd/xnightwatch/pkg/version"
+	"github.com/jinzhu/copier"
 	"github.com/spf13/cobra"
+	corev1 "k8s.io/api/core/v1"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/metadata"
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 	"k8s.io/client-go/restmapper"
+	"k8s.io/component-base/configz"
 	"k8s.io/component-base/featuregate"
 	controllersmetrics "k8s.io/component-base/metrics/prometheus/controllers"
 	genericcontrollermanager "k8s.io/controller-manager/app"
@@ -26,10 +31,16 @@ import (
 	"k8s.io/controller-manager/pkg/informerfactory"
 	"k8s.io/klog/v2"
 	"k8s.io/kubernetes/pkg/controller/garbagecollector"
+	"sigs.k8s.io/controller-runtime/pkg/cache"
+	"sigs.k8s.io/controller-runtime/pkg/client"
+	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
+	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/selection"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	"k8s.io/apimachinery/pkg/util/sets"
+	genericapiserver "k8s.io/apiserver/pkg/server"
 	utilfeature "k8s.io/apiserver/pkg/util/feature"
 	restclient "k8s.io/client-go/rest"
 	cliflag "k8s.io/component-base/cli/flag"
@@ -101,7 +112,25 @@ current state towards the desired state.`,
 			if err := o.Complete(); err != nil {
 				return err
 			}
-			return nil
+
+			allControllers, disabledControllers, controllerAliases := KnownControllers(), DisabledControllers(), ControllerAliases()
+			if err := o.Validate(allControllers, disabledControllers, controllerAliases); err != nil {
+				return err
+			}
+
+			c, err := o.Config(allControllers, disabledControllers, controllerAliases)
+			if err != nil {
+				return err
+			}
+
+			cc := c.Complete()
+			if err := options.LogOrWriteConfig(o.WriteConfigTo, cc.ComponentConfig); err != nil {
+				return err
+			}
+
+			// add feature enablement metrics
+			utilfeature.DefaultMutableFeatureGate.AddMetrics()
+			return Run(genericapiserver.SetupSignalContext(), cc)
 		},
 
 		Args: func(cmd *cobra.Command, args []string) error {
@@ -128,6 +157,82 @@ current state towards the desired state.`,
 		klog.Background().Error(err, "Failed to mark flag filename")
 	}
 	return cmd
+}
+
+// Run runs the controller manager options. This should never exit.
+func Run(ctx context.Context, c *config.CompletedConfig) error {
+	logger := klog.FromContext(ctx)
+	// stopCh := ctx.Done()
+
+	// To help debugging, immediately log version
+	klog.InfoS("Starting controller manager", "version", version.Get().String())
+
+	klog.InfoS("Golang settings", "GOGC", os.Getenv("GOGC"), "GOMAXPROCS", os.Getenv("GOMAXPROCS"), "GOTRACEBACK", os.Getenv("GOTRACEBACK"))
+
+	if cfgz, err := configz.New(ConfigzName); err == nil {
+		cfgz.Set(c.ComponentConfig)
+	} else {
+		logger.Error(err, "Unable to register configz")
+	}
+
+	// Do some initialization
+	var mysqlOptions db.MySQLOptions
+	_ = copier.Copy(&mysqlOptions, c.ComponentConfig.Generic.MySQL)
+	storeClient, err := wireStoreClient(&mysqlOptions)
+	if err != nil {
+		return err
+	}
+
+	var watchNamespaces map[string]cache.Config
+	if c.ComponentConfig.Generic.Namespace != "" {
+		watchNamespaces = map[string]cache.Config{
+			c.ComponentConfig.Generic.Namespace: {},
+		}
+	}
+
+	req, _ := labels.NewRequirement(v1beta1.ChainNameLabel, selection.Exists, nil)
+	chainCacheSelector := labels.NewSelector().Add(*req)
+
+	// create new manager
+	mgr, err := ctrl.NewManager(c.KubeConfig, ctrl.Options{
+		Scheme:                     scheme,
+		LeaderElection:             c.ComponentConfig.Generic.LeaderElection.LeaderElect,
+		LeaderElectionID:           c.ComponentConfig.Generic.LeaderElection.ResourceName,
+		LeaseDuration:              &c.ComponentConfig.Generic.LeaderElection.LeaseDuration.Duration,
+		RenewDeadline:              &c.ComponentConfig.Generic.LeaderElection.RenewDeadline.Duration,
+		RetryPeriod:                &c.ComponentConfig.Generic.LeaderElection.RetryPeriod.Duration,
+		LeaderElectionResourceLock: c.ComponentConfig.Generic.LeaderElection.ResourceLock,
+		LeaderElectionNamespace:    c.ComponentConfig.Generic.LeaderElection.ResourceNamespace,
+		HealthProbeBindAddress:     c.ComponentConfig.Generic.HealthzBindAddress,
+		PprofBindAddress:           c.ComponentConfig.Generic.PprofBindAddress,
+		Cache: cache.Options{
+			DefaultNamespaces: watchNamespaces,
+			SyncPeriod:        &c.ComponentConfig.Generic.SyncPeriod.Duration,
+			ByObject: map[client.Object]cache.ByObject{
+				&corev1.ConfigMap{}: {Label: chainCacheSelector},
+				&corev1.Secret{}:    {Label: chainCacheSelector},
+			},
+		},
+		// only cache the necessary resources (with specific labels)
+		Client: client.Options{
+			Cache: &client.CacheOptions{
+				DisableFor: []client.Object{
+					&corev1.ConfigMap{},
+					&corev1.Secret{},
+				},
+			},
+		},
+		// webhook server used to handle Admission Control requests
+		WebhookServer: webhook.NewServer(
+			webhook.Options{},
+		),
+	})
+	if err != nil {
+		klog.ErrorS(err, "Unable to new controller manager")
+	}
+
+	// todo: make machine metrics collector
+	return mgr.Start(ctx)
 }
 
 // ControllerContext defines the context object for controller
